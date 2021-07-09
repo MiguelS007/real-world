@@ -1,52 +1,76 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import Vue from "vue";
+import Router from "vue-router";
 
-const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: Home,
-  },
-  {
-    path: "/login",
-    name: "login",
-    component: () => import("@/views/Login.vue"),
-  },
-  {
-    path: "/register",
-    name: "register",
-    component: () => import("@/views/Register.vue"),
-  },
-  {
-    path: "/settings",
-    name: "settings",
-    component: () => import("@/views/Settings.vue"),
-  },
-  {
-    path: "/editor",
-    name: "editor_new",
-    component: () => import("@/views/ArticleCreate.vue"),
-  },
-  {
-    path: "/editor/:article_slug",
-    name: "editor_edit",
-    component: () => import("@/views/ArticleEdit.vue"),
-  },
-  {
-    path: "/article/:article_slug",
-    name: "article",
-    component: () => import("@/views/Article.vue"),
-  },
-  {
-    path: "/:username",
-    name: "profile",
-    component: () => import("@/views/Profile.vue"),
-  },
-];
+Vue.use(Router);
 
-const router = createRouter({
-  history: createWebHashHistory(),
-  routes,
+export default new Router({
+  routes: [
+    {
+      path: "/",
+      component: () => import("@/views/Home"),
+      children: [
+        {
+          path: "",
+          name: "home",
+          component: () => import("@/views/HomeGlobal")
+        },
+        {
+          path: "my-feed",
+          name: "home-my-feed",
+          component: () => import("@/views/HomeMyFeed")
+        },
+        {
+          path: "tag/:tag",
+          name: "home-tag",
+          component: () => import("@/views/HomeTag")
+        }
+      ]
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: () => import("@/views/Login")
+    },
+    {
+      name: "register",
+      path: "/register",
+      component: () => import("@/views/Register")
+    },
+    {
+      name: "settings",
+      path: "/settings",
+      component: () => import("@/views/Settings")
+    },
+    // Handle child routes with a default, by giving the name to the
+    // child.
+    // SO: https://github.com/vuejs/vue-router/issues/777
+    {
+      path: "/@:username",
+      component: () => import("@/views/Profile"),
+      children: [
+        {
+          path: "",
+          name: "profile",
+          component: () => import("@/views/ProfileArticles")
+        },
+        {
+          name: "profile-favorites",
+          path: "favorites",
+          component: () => import("@/views/ProfileFavorited")
+        }
+      ]
+    },
+    {
+      name: "article",
+      path: "/articles/:slug",
+      component: () => import("@/views/Article"),
+      props: true
+    },
+    {
+      name: "article-edit",
+      path: "/editor/:slug?",
+      props: true,
+      component: () => import("@/views/ArticleEdit")
+    }
+  ]
 });
-
-export default router;

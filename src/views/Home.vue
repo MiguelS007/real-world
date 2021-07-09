@@ -6,53 +6,49 @@
         <p>A place to share your knowledge.</p>
       </div>
     </div>
-
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <a
+              <li v-if="isAuthenticated" class="nav-item">
+                <router-link
+                  :to="{ name: 'home-my-feed' }"
                   class="nav-link"
-                  v-if="username"
-                  @click="setFeed('user')"
-                  :class="{ active: activeFeed === 'user' }"
+                  active-class="active"
                 >
                   Your Feed
-                </a>
+                </router-link>
               </li>
               <li class="nav-item">
-                <a
+                <router-link
+                  :to="{ name: 'home' }"
+                  exact
                   class="nav-link"
-                  @click="setFeed('global')"
-                  :class="{ active: activeFeed === 'global' }"
+                  active-class="active"
                 >
                   Global Feed
-                </a>
+                </router-link>
+              </li>
+              <li class="nav-item" v-if="tag">
+                <router-link
+                  :to="{ name: 'home-tag', params: { tag } }"
+                  class="nav-link"
+                  active-class="active"
+                >
+                  <i class="ion-pound"></i> {{ tag }}
+                </router-link>
               </li>
             </ul>
           </div>
-
-          <ArticlePreview
-            v-for="article in globalArticles"
-            :key="article.slug"
-            :article="article"
-          ></ArticlePreview>
+          <router-view></router-view>
         </div>
         <div class="col-md-3">
           <div class="sidebar">
             <p>Popular Tags</p>
-
             <div class="tag-list">
-              <a href="" class="tag-pill tag-default">programming</a>
-              <a href="" class="tag-pill tag-default">javascript</a>
-              <a href="" class="tag-pill tag-default">emberjs</a>
-              <a href="" class="tag-pill tag-default">angularjs</a>
-              <a href="" class="tag-pill tag-default">react</a>
-              <a href="" class="tag-pill tag-default">mean</a>
-              <a href="" class="tag-pill tag-default">node</a>
-              <a href="" class="tag-pill tag-default">rails</a>
+              <RwvTag v-for="(tag, index) in tags" :name="tag" :key="index">
+              </RwvTag>
             </div>
           </div>
         </div>
@@ -62,37 +58,23 @@
 </template>
 
 <script>
-import ArticlePreview from "@/components/ArticlePreview.vue";
+import { mapGetters } from "vuex";
+import RwvTag from "@/components/VTag";
+import { FETCH_TAGS } from "@/store/actions.type";
+
 export default {
+  name: "home",
   components: {
-    ArticlePreview,
+    RwvTag
   },
-  methods: {
-    setFeed(feedType) {
-      if (feedType === "global") {
-        this.activeFeed = "global";
-        this.$store.dispatch("articles/getGlobalFeed");
-      } else if (feedType === "user") {
-        this.activeFeed = "user";
-        this.$store.dispatch("articles/getUserFeed");
-      }
-    },
-  },
-  created() {
-    this.setFeed("global");
+  mounted() {
+    this.$store.dispatch(FETCH_TAGS);
   },
   computed: {
-    globalArticles() {
-      return this.$store.state.articles.feed || [];
-    },
-    username() {
-      return this.$store.getters["users/username"];
-    },
-  },
-  data: function () {
-    return {
-      activeFeed: "global",
-    };
-  },
+    ...mapGetters(["isAuthenticated", "tags"]),
+    tag() {
+      return this.$route.params.tag;
+    }
+  }
 };
 </script>

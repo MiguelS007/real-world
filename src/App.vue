@@ -1,16 +1,21 @@
 <template>
   <div id="app">
-    <NavBar></NavBar>
-    <router-view />
+    <RwvHeader />
+    <router-view></router-view>
+    <RwvFooter />
   </div>
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+import RwvHeader from "@/components/TheHeader";
+import RwvFooter from "@/components/TheFooter";
+
 export default {
+  name: "App",
   components: {
-    NavBar,
-  },
+    RwvHeader,
+    RwvFooter
+  }
 };
 </script>
 

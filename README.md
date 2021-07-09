@@ -1,33 +1,33 @@
 # realworld-vue
 
-## Project setup
+
+```bash
+# install editorconfig globally
+> npm install -g editorconfig
 ```
-npm install
+
+## Project setup
+``` bash
+# install dependencies
+> yarn install
 ```
 
 ### Compiles and hot-reloads for development
-```
-npm run serve
+```bash
+# serve with hot reload at localhost:8080
+> yarn serve
 ```
 
 ### Compiles and minifies for production
-```
-npm run build
+``` bash
+# build for production with minification
+yarn run build
 ```
 
 ### Run your unit tests
 ```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Lints and fixes files
-```
-npm run lint
+# run unit tests
+yarn test
 ```
 
 ### Customize configuration

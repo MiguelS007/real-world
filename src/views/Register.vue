@@ -4,44 +4,42 @@
       <div class="row">
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Sign up</h1>
-          <p class="text-xs-center"><a href="">Have an account?</a></p>
-
-          <ul class="error-messages">
-            <li v-for="(error, i) in errors" :key="i">{{ error.message }}</li>
+          <p class="text-xs-center">
+            <router-link :to="{ name: 'login' }">
+              Have an account?
+            </router-link>
+          </p>
+          <ul v-if="errors" class="error-messages">
+            <li v-for="(v, k) in errors" :key="k">{{ k }} {{ v | error }}</li>
           </ul>
-
-          <form>
+          <form @submit.prevent="onSubmit">
             <fieldset class="form-group">
               <input
-                v-model="username"
                 class="form-control form-control-lg"
                 type="text"
-                placeholder="Your Name"
+                v-model="username"
+                placeholder="Username"
               />
             </fieldset>
             <fieldset class="form-group">
               <input
-                v-model="email"
                 class="form-control form-control-lg"
                 type="text"
+                v-model="email"
                 placeholder="Email"
               />
             </fieldset>
             <fieldset class="form-group">
               <input
-                v-model="password"
                 class="form-control form-control-lg"
                 type="password"
+                v-model="password"
                 placeholder="Password"
               />
             </fieldset>
-            <router-link
-              @click="create"
-              class="btn btn-lg btn-primary pull-xs-right"
-              to="/"
-            >
+            <button class="btn btn-lg btn-primary pull-xs-right">
               Sign up
-            </router-link>
+            </button>
           </form>
         </div>
       </div>
@@ -50,27 +48,33 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { REGISTER } from "@/store/actions.type";
+
 export default {
-  data: function () {
+  name: "RwvRegister",
+  data() {
     return {
-      password: "",
+      username: "",
       email: "",
-      errors: [],
+      password: ""
     };
   },
+  computed: {
+    ...mapState({
+      errors: state => state.auth.errors
+    })
+  },
   methods: {
-    async create() {
-      try {
-        await this.$store.dispatch("users/createUser", {
-          username: this.username,
+    onSubmit() {
+      this.$store
+        .dispatch(REGISTER, {
           email: this.email,
           password: this.password,
-        });
-      } catch (err) {
-        this.errors = [];
-        this.errors.push(err);
-      }
-    },
-  },
+          username: this.username
+        })
+        .then(() => this.$router.push({ name: "home" }));
+    }
+  }
 };
 </script>

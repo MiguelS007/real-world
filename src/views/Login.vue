@@ -4,36 +4,34 @@
       <div class="row">
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Sign in</h1>
-          <p class="text-xs-center"><a href="">Need an account?</a></p>
-
-          <ul class="error-messages">
-            <li v-for="(error, i) in errors" :key="i">{{ error.message }}</li>
+          <p class="text-xs-center">
+            <router-link :to="{ name: 'register' }">
+              Need an account?
+            </router-link>
+          </p>
+          <ul v-if="errors" class="error-messages">
+            <li v-for="(v, k) in errors" :key="k">{{ k }} {{ v | error }}</li>
           </ul>
-
-          <form>
+          <form @submit.prevent="onSubmit(email, password)">
             <fieldset class="form-group">
               <input
-                v-model="email"
                 class="form-control form-control-lg"
                 type="text"
+                v-model="email"
                 placeholder="Email"
               />
             </fieldset>
             <fieldset class="form-group">
               <input
-                v-model="password"
                 class="form-control form-control-lg"
                 type="password"
+                v-model="password"
                 placeholder="Password"
               />
             </fieldset>
-            <router-link
-              @click="login"
-              class="btn btn-lg btn-primary pull-xs-right"
-              to="/"
-            >
+            <button class="btn btn-lg btn-primary pull-xs-right">
               Sign in
-            </router-link>
+            </button>
           </form>
         </div>
       </div>
@@ -42,26 +40,28 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { LOGIN } from "@/store/actions.type";
+
 export default {
-  data: function () {
+  name: "RwvLogin",
+  data() {
     return {
-      password: "",
-      email: "",
-      errors: [],
+      email: null,
+      password: null
     };
   },
   methods: {
-    async login() {
-      try {
-        await this.$store.dispatch("users/loginUser", {
-          email: this.email,
-          password: this.password,
-        });
-      } catch (err) {
-        this.errors = [];
-        this.errors.push(err);
-      }
-    },
+    onSubmit(email, password) {
+      this.$store
+        .dispatch(LOGIN, { email, password })
+        .then(() => this.$router.push({ name: "home" }));
+    }
   },
+  computed: {
+    ...mapState({
+      errors: state => state.auth.errors
+    })
+  }
 };
 </script>
