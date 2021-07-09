@@ -1,5 +1,7 @@
 # realworld-vue
 
+Acesse o projeto em produção pelo link: https://real-world-m7ienzf9g-miguels007.vercel.app/#/
+
 
 ```bash
 # install editorconfig globally
