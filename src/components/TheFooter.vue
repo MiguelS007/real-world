@@ -2,13 +2,16 @@
   <footer>
     <div class="container">
       <router-link class="logo-font" :to="{ name: 'home', params: {} }">
-        conduit
+        MiguelS007
       </router-link>
       <span class="attribution">
-        An interactive learning project from
-        <a rel="noopener noreferrer" target="blank" href="https://thinkster.io"
-          >Thinkster</a
-        >. Code &amp; design licensed under MIT.
+        Access the project's source code on
+        <a
+          rel="noopener noreferrer"
+          target="blank"
+          href="https://github.com/MiguelS007/real-world"
+          >GitHub</a
+        >. &amp; let your star.
       </span>
     </div>
   </footer>
